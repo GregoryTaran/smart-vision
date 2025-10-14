@@ -1,0 +1,16 @@
+{
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs20",
+    "ignore": [".env"]
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": ["firebase.json","**/.*","**/node_modules/**"],
+    "cleanUrls": true,
+    "rewrites": [
+      { "source": "/api/**", "function": "ask" },
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}
