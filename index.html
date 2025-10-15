@@ -40,7 +40,23 @@
       flex: 1; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 1rem;
     }
     footer { margin-top: 48px; font-size: 0.85rem; color: #777; }
-    .center { text-align: center; }
+    .links-block {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px 20px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+      text-align: center;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-top: 32px;
+    }
+    .links-block a {
+      color: #333;
+      text-decoration: none;
+      display: block;
+      margin: 2px 0;
+    }
+    .links-block a:hover { text-decoration: underline; }
   </style>
 </head>
 
@@ -48,14 +64,13 @@
 
   <img src="assets/logo-horizontal.jpg" alt="Smart Vision" class="logo-horizontal" />
 
-  <div class="vision-block center">
+  <div class="vision-block">
     Любая мысль может стать визией.<br />
     Любая визия может стать дорогой.<br />
     А дорога — источником внутреннего света!
     <div class="author">Грег Таран | 2025</div>
   </div>
 
-  <!-- Блоки аутентификации -->
   <div data-auth="out" class="center" style="margin-bottom:16px;">
     <button data-action="login-google" class="google-btn">Аутентификация через Google</button>
   </div>
@@ -78,15 +93,18 @@
     <button data-action="logout" class="btn">Выйти</button>
   </div>
 
-  <footer class="center">
-    SMART VISION — МЕСТО, ГДЕ ВИЗИЯ ПРЕВРАЩАЕТСЯ В РЕАЛИЗАЦИЮ. © 2025
+  <footer>
+    SMART VISION — МЕСТО, ГДЕ ВИЗИЯ ПРЕВРАЩАЕТСЯ В РЕАЛИЗАЦИЮ.
   </footer>
 
-  <!-- Firebase SDK -->
+  <div class="links-block">
+    <a href="/privacy" target="_blank">Политика конфиденциальности</a>
+    <a href="/terms" target="_blank">Условия использования</a>
+    <div style="margin-top:6px; font-size:0.8rem; color:#777;">© 2025 Smart Vision</div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
-
-  <!-- Подключение логики аутентификации -->
   <script src="js/auth.js"></script>
 
 </body>
