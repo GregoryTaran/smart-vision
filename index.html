@@ -4,108 +4,38 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Smart Vision ✨</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    .hidden { display: none !important; }
-    body.start-page {
-      text-align: center;
-      font-family: 'Inter', sans-serif;
-      color: #222;
-      background: linear-gradient(135deg, #f4f6f8, #e7ebef);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-    }
-    .logo-horizontal { width: 240px; margin-bottom: 24px; }
-    .vision-block { font-size: 1.2rem; line-height: 1.8; margin-bottom: 32px; }
-    .author { margin-top: 8px; font-size: 0.9rem; color: #555; }
-    .google-btn, .btn {
-      background-color: #4285f4;
-      color: white; border: none; border-radius: 6px;
-      padding: 14px 28px; font-size: 1rem; cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    .google-btn:hover, .btn:hover { background-color: #3367d6; }
-    .card {
-      background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 6px 24px rgba(0,0,0,.06);
-      width: min(480px, 92vw); text-align: left;
-    }
-    .card h3 { margin: 0 0 12px; font-size: 1.05rem; }
-    .row { display: flex; gap: 8px; margin-top: 8px; }
-    input[type="email"] {
-      flex: 1; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 1rem;
-    }
-    footer { margin-top: 48px; font-size: 0.85rem; color: #777; }
-    .links-block {
-      background: #fff;
-      border-radius: 10px;
-      padding: 16px 20px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
-      text-align: center;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin-top: 32px;
-    }
-    .links-block a {
-      color: #333;
-      text-decoration: none;
-      display: block;
-      margin: 2px 0;
-    }
-    .links-block a:hover { text-decoration: underline; }
-  </style>
 </head>
+<body>
 
-<body class="start-page">
+  <main class="main-container">
+    <img src="assets/logo-horizontal.jpg" alt="Smart Vision" class="logo">
 
-  <img src="assets/logo-horizontal.jpg" alt="Smart Vision" class="logo-horizontal" />
+    <!-- Google Auth Block -->
+    <section class="auth-block google-block">
+      <button data-action="login-google" class="btn google-btn">Войти через Google</button>
+    </section>
 
-  <div class="vision-block">
-    Любая мысль может стать визией.<br />
-    Любая визия может стать дорогой.<br />
-    А дорога — источником внутреннего света!
-    <div class="author">Грег Таран | 2025</div>
-  </div>
-
-  <div data-auth="out" class="center" style="margin-bottom:16px;">
-    <button data-action="login-google" class="google-btn">Аутентификация через Google</button>
-  </div>
-
-  <div class="card" data-auth="out">
-    <h3>Или вход по e‑mail (без пароля)</h3>
-    <div class="row">
-      <input id="email-input" type="email" placeholder="you@example.com" autocomplete="email" />
+    <!-- Email Auth Block -->
+    <section class="auth-block email-block">
+      <h2>Вход по e‑mail (без пароля)</h2>
+      <input id="email-input" type="email" placeholder="you@example.com" autocomplete="email">
       <button id="email-link-btn" class="btn">Отправить ссылку</button>
-    </div>
-    <div id="email-hint" class="hidden" style="margin-top:10px;color:#555;">
-      Мы отправили письмо. Проверьте почту и откройте ссылку на этом устройстве.
-    </div>
-  </div>
+      <div id="email-hint" class="hidden">Проверьте почту и откройте ссылку на этом устройстве.</div>
+    </section>
 
-  <div data-auth="in" class="hidden center" style="margin-top:16px;">
-    <div style="margin-bottom: 12px;">
-      <span>Добро пожаловать, <b data-auth="email"></b>!</span>
-    </div>
-    <button data-action="logout" class="btn">Выйти</button>
-  </div>
+    <!-- Footer links -->
+    <section class="links-block">
+      <a href="/privacy" target="_blank">Политика конфиденциальности</a>
+      <a href="/terms" target="_blank">Условия использования</a>
+      <div class="copyright">© 2025 Smart Vision</div>
+    </section>
+  </main>
 
-  <footer>
-    SMART VISION — МЕСТО, ГДЕ ВИЗИЯ ПРЕВРАЩАЕТСЯ В РЕАЛИЗАЦИЮ.
-  </footer>
-
-  <div class="links-block">
-    <a href="/privacy" target="_blank">Политика конфиденциальности</a>
-    <a href="/terms" target="_blank">Условия использования</a>
-    <div style="margin-top:6px; font-size:0.8rem; color:#777;">© 2025 Smart Vision</div>
-  </div>
-
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
   <script src="js/auth.js"></script>
-
 </body>
 </html>
