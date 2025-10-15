@@ -29,7 +29,7 @@ function setText(selector, text) {
 }
 function toast(msg) { console.log(msg); }
 
-// ==== Google Sign‑In ====
+// ==== Google Sign-In ====
 async function signInWithGoogle() {
   try {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -50,16 +50,15 @@ async function signInWithGoogle() {
 // ==== Email Link (passwordless) ====
 const actionCodeSettings = {
   // URL, куда вернётся пользователь после клика по ссылке из письма
-  url: "https://smartvision.life/__/auth/action",
+  url: "https://smartvision.life",
   handleCodeInApp: true
-  // Можно добавить iOS/Android bundleId/packageName, если будут мобильные приложения
 };
 
 async function sendEmailLink() {
   const input = document.getElementById("email-input");
   const email = (input?.value || "").trim();
   if (!email) {
-    alert("Укажите e‑mail");
+    alert("Укажите e-mail");
     input?.focus();
     return;
   }
@@ -74,13 +73,13 @@ async function sendEmailLink() {
   }
 }
 
-// При открытии страницы проверяем: это возврат по e‑mail ссылке?
+// При открытии страницы проверяем: это возврат по e-mail ссылке?
 async function completeEmailLinkSignInIfNeeded() {
   if (auth.isSignInWithEmailLink(window.location.href)) {
     let email = localStorage.getItem("sv_email_for_signin");
     if (!email) {
-      // Если ссылку открыли на другом устройстве — попросим e‑mail
-      email = window.prompt("Введите e‑mail, на который пришла ссылка:");
+      // Если ссылку открыли на другом устройстве — попросим e-mail
+      email = window.prompt("Введите e-mail, на который пришла ссылка:");
     }
     try {
       const result = await auth.signInWithEmailLink(email, window.location.href);
@@ -103,13 +102,11 @@ auth.onAuthStateChanged(async (user) => {
     show('[data-auth="in"]');
     hide('[data-auth="out"]');
     document.documentElement.setAttribute("data-user", "signed-in");
-    // window.currentIdToken = token; // если нужно для API
   } else {
     setText('[data-auth="email"]', "");
     show('[data-auth="out"]');
     hide('[data-auth="in"]');
     document.documentElement.setAttribute("data-user", "signed-out");
-    // window.currentIdToken = null;
   }
 });
 
