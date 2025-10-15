@@ -20,38 +20,27 @@
       align-items: center;
       margin: 0;
     }
-    .logo-horizontal {
-      width: 240px;
-      margin-bottom: 24px;
-    }
-    .vision-block {
-      font-size: 1.2rem;
-      line-height: 1.8;
-      margin-bottom: 40px;
-    }
-    .author {
-      margin-top: 8px;
-      font-size: 0.9rem;
-      color: #555;
-    }
+    .logo-horizontal { width: 240px; margin-bottom: 24px; }
+    .vision-block { font-size: 1.2rem; line-height: 1.8; margin-bottom: 32px; }
+    .author { margin-top: 8px; font-size: 0.9rem; color: #555; }
     .google-btn, .btn {
       background-color: #4285f4;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 14px 28px;
-      font-size: 1rem;
-      cursor: pointer;
+      color: white; border: none; border-radius: 6px;
+      padding: 14px 28px; font-size: 1rem; cursor: pointer;
       transition: background 0.3s ease;
     }
-    .google-btn:hover, .btn:hover {
-      background-color: #3367d6;
+    .google-btn:hover, .btn:hover { background-color: #3367d6; }
+    .card {
+      background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 6px 24px rgba(0,0,0,.06);
+      width: min(480px, 92vw); text-align: left;
     }
-    footer {
-      margin-top: 60px;
-      font-size: 0.85rem;
-      color: #777;
+    .card h3 { margin: 0 0 12px; font-size: 1.05rem; }
+    .row { display: flex; gap: 8px; margin-top: 8px; }
+    input[type="email"] {
+      flex: 1; padding: 12px 14px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 1rem;
     }
+    footer { margin-top: 48px; font-size: 0.85rem; color: #777; }
+    .center { text-align: center; }
   </style>
 </head>
 
@@ -59,7 +48,7 @@
 
   <img src="assets/logo-horizontal.jpg" alt="Smart Vision" class="logo-horizontal" />
 
-  <div class="vision-block">
+  <div class="vision-block center">
     Любая мысль может стать визией.<br />
     Любая визия может стать дорогой.<br />
     А дорога — источником внутреннего света!
@@ -67,18 +56,29 @@
   </div>
 
   <!-- Блоки аутентификации -->
-  <div data-auth="out">
+  <div data-auth="out" class="center" style="margin-bottom:16px;">
     <button data-action="login-google" class="google-btn">Аутентификация через Google</button>
   </div>
 
-  <div data-auth="in" class="hidden">
-    <div style="margin-bottom: 16px;">
+  <div class="card" data-auth="out">
+    <h3>Или вход по e‑mail (без пароля)</h3>
+    <div class="row">
+      <input id="email-input" type="email" placeholder="you@example.com" autocomplete="email" />
+      <button id="email-link-btn" class="btn">Отправить ссылку</button>
+    </div>
+    <div id="email-hint" class="hidden" style="margin-top:10px;color:#555;">
+      Мы отправили письмо. Проверьте почту и откройте ссылку на этом устройстве.
+    </div>
+  </div>
+
+  <div data-auth="in" class="hidden center" style="margin-top:16px;">
+    <div style="margin-bottom: 12px;">
       <span>Добро пожаловать, <b data-auth="email"></b>!</span>
     </div>
     <button data-action="logout" class="btn">Выйти</button>
   </div>
 
-  <footer>
+  <footer class="center">
     SMART VISION — МЕСТО, ГДЕ ВИЗИЯ ПРЕВРАЩАЕТСЯ В РЕАЛИЗАЦИЮ. © 2025
   </footer>
 
