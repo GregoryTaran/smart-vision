@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>О пользователе</title>
+  <link rel="stylesheet" href="../css/1.css" />
+</head>
+<body>
+  <div class="content">
+    <h1>Информация о пользователе</h1>
+    <div id="info"></div>
+  </div>
+
+  <script>
+    async function getUserInfo() {
+      const infoDiv = document.getElementById('info');
+
+      // Локальная информация
+      const userInfo = {
+        Время_входа: new Date().toLocaleString(),
+        Язык_браузера: navigator.language,
+        Платформа: navigator.platform,
+        Агент: navigator.userAgent,
+        Ширина_экрана: window.screen.width + " px",
+        Высота_экрана: window.screen.height + " px"
+      };
+
+      // IP и геолокация (через публичное API)
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        userInfo.IP = data.ip;
+        userInfo.Страна = data.country_name;
+        userInfo.Город = data.city;
+        userInfo.Провайдер = data.org;
+      } catch {
+        userInfo.IP = "Не удалось получить";
+      }
+
+      // Вывод в столбик
+      infoDiv.innerHTML = Object.entries(userInfo)
+        .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`)
+        .join('');
+    }
+
+    getUserInfo();
+  </script>
+</body>
+</html>
