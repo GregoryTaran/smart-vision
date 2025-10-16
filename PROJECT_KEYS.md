@@ -3,7 +3,6 @@ Project name	SMART VISION
 Project number	485212580203
 Основной хостинг	smart-vision-888.web.app (основной сайт)
 Тестовый хостинг	smartvision-test.web.app и test.smartvision.life
-Web API Key	AIzaSyATQYyB5RbbKqIEN-STvBiVlxPjPRBAtF8 (от Firebase Web App)
 
 Консоль	https://console.firebase.google.com/project/smart-vision-888/hosting/sites/smartvision-test
 
