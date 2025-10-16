@@ -1,26 +1,20 @@
 {
-  "hosting": [
-    {
-      "site": "smart-vision-888",
-      "public": "public",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ]
-    },
-    {
-      "site": "smartvision-test",
-      "public": ".",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ]
-    }
-  ],
   "functions": {
     "source": "functions",
     "runtime": "nodejs20"
+  },
+  "hosting": {
+    "site": "smartvision-test",
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "rewrites": [
+      { "source": "/api/**", "function": "ask" },
+      { "source": "**", "destination": "/index.html" }
+    ]
   }
 }

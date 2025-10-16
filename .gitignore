@@ -1,6 +1,7 @@
 # =========================================
-# ✅ SMART VISION PROJECT (.gitignore)
-# Firebase + Node.js + GitHub Actions
+# ✅ SMART VISION TEST PROJECT (.gitignore)
+# Firebase Hosting: smartvision-test.web.app
+# Project ID: smart-vision-888
 # =========================================
 
 # --- 1. Секреты и приватные данные ---
@@ -14,12 +15,15 @@ functions/.local.env
 *.crt
 *.cert
 
-# Игнорировать любые приватные JSON-ключи, но оставлять системные
+# Игнорировать приватные JSON-ключи (Firebase service accounts и др.)
 *serviceaccount*.json
 *credentials*.json
+*account*.json
+*private*.json
 
-# Разрешаем безопасные JSON-конфиги проекта
+# Разрешаем безопасные конфиги проекта
 !firebase.json
+!.firebaserc
 !package.json
 !package-lock.json
 
@@ -33,20 +37,19 @@ pnpm-debug.log*
 
 # --- 3. Firebase ---
 .firebase/
-.firebaserc
 firebase-debug.log
 firebase-debug.*
 .firebasecache/
 .firebase-tools.json
 
-# --- 4. IDE / Editor / OS файлы ---
+# --- 4. IDE / Editor / OS ---
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# --- 5. Temporary / build artifacts ---
+# --- 5. Build / Temp ---
 dist/
 build/
 tmp/
@@ -58,15 +61,19 @@ temp/
 *.swp
 *.lock
 
-# --- 6. Deployment tools ---
+# --- 6. Hosting / Deployment ---
 .netlify/
 .vercel/
+.well-known/acme-challenge/
+.github/
+functions/lib/
+functions/dist/
 
 # --- 7. GitHub workflow outputs ---
 *.tgz
 *.zip
 
-# --- 8. Tests, drafts, backups ---
+# --- 8. Tests / Drafts / Backups ---
 __tests__/
 __pycache__/
 backup/

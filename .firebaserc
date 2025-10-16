@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "smart-vision-888"
+  },
+  "targets": {
+    "smart-vision-888": {
+      "hosting": {
+        "smartvision-test": [
+          "smartvision-test"
+        ]
+      }
+    }
+  }
+}
