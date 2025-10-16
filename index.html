@@ -1,60 +1,53 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Smart Vision ✨</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/css1.css" />
+  <title>Taran Media Projects 2</title>
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #f4f6f8, #e7ebef);
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      margin: 0;
+    }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    p { color: #555; margin-bottom: 2rem; }
+    a.project {
+      display: inline-block;
+      padding: 12px 28px;
+      margin: 8px;
+      border-radius: 10px;
+      background: #0077cc;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    a.project:hover { background: #005fa3; transform: translateY(-2px); }
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.85rem;
+      color: #777;
+    }
+  </style>
 </head>
 <body>
+  <h1>Проекты Taran Media</h1>
+  <p>Выберите направление:</p>
 
-  <!-- Кнопка открытия меню -->
-  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <!-- 🔹 обновлённая ссылка на новый Smart Vision -->
+  <a href="https://mysmartvision.netlify.app/smart-vision.html" class="project">🧠 Smart Vision (новая версия)</a>
+  <a href="https://voice-assistant-mvp.netlify.app" class="project">🎙 Voice Assistant MVP</a>
 
-  <!-- Меню -->
-  <div class="side-menu" id="sideMenu">
-    <div class="menu-header">
-      <span class="menu-title">MENU</span>
-      <span class="menu-close" onclick="toggleMenu()">→</span>
-    </div>
-    <ul class="menu-links">
-      <li><a href="#">СТРАНИЦА 1</a></li>
-      <li><a href="#">СТРАНИЦА 2</a></li>
-      <li><a href="#">СТРАНИЦА 3</a></li>
-    </ul>
-    <div class="menu-footer">
-      <div class="user-name">Грег Таран</div>
-      <ul>
-        <li>Настройки</li>
-        <li>Подстройки</li>
-        <li>Аналитика</li>
-      </ul>
-    </div>
-  </div>
-
-  <main class="main-container">
-    <img src="assets/logo-horizontal.jpg" alt="Smart Vision" class="logo">
-
-    <section class="auth-block google-block">
-      <button data-action="login-google" class="btn white-btn" onclick="toggleActive(this)">Белая кнопка</button>
-    </section>
-
-    <section class="auth-block email-block">
-      <h2>Вход по e‑mail (без пароля)</h2>
-      <input id="email-input" type="email" placeholder="you@example.com" autocomplete="email">
-      <button id="email-link-btn" class="btn">Отправить ссылку</button>
-      <div id="email-hint" class="hidden">Проверьте почту и откройте ссылку на этом устройстве.</div>
-    </section>
-
-    <section class="links-block">
-      <a href="/privacy" target="_blank">Политика конфиденциальности</a>
-      <a href="/terms" target="_blank">Условия использования</a>
-      <div class="copyright">© 2025 Smart Vision</div>
-    </section>
-  </main>
-
-  <script src="menu.js"></script>
+  <footer>© 2025 Greg Taran — Ясность, Интеллект и Свобода</footer>
 </body>
 </html>
