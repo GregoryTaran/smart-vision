@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Меню</title>
+  <link rel="stylesheet" href="../css/styles-menu.css" />
+</head>
+<body class="menu-body">
+  <div class="menu-header">
+    <span class="menu-title">МЕНЮ</span>
+    <button class="menu-close" onclick="parent.postMessage('closeSidebar', '*')">&#x2190;</button>
+  </div>
+  <div class="menu-container" id="menuArea">
+    <ul class="menu-list">
+      <li><a href="../index.html" target="_parent" onclick="parent.postMessage('closeSidebar', '*')">• Главная страница</a></li>
+      <li><a href="privacy.html" target="_parent" onclick="parent.postMessage('closeSidebar', '*')">• Политика конфиденциальности</a></li>
+      <li><a href="terms.html" target="_parent" onclick="parent.postMessage('closeSidebar', '*')">• Условия использования</a></li>
+      <li><a href="about.html" target="_parent" onclick="parent.postMessage('closeSidebar', '*')">• О сервисе</a></li>
+    </ul>
+  </div>
+  <script>
+    let sx=0, ex=0;
+    const area=document.getElementById('menuArea');
+    area.addEventListener('touchstart', e=>sx=e.changedTouches[0].screenX, {passive:true});
+    area.addEventListener('touchend', e=>{ex=e.changedTouches[0].screenX;if(ex-sx<-50)parent.postMessage('closeSidebar','*');}, {passive:true});
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+body{margin:0;font-family:'Segoe UI',sans-serif;background:#f0f0f2;color:#333;}
+.top-bar{background:#e8eaec;height:60px;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.icon{font-size:22px;background:none;border:none;cursor:pointer;}
+.icon#menuToggle{position:absolute;left:1rem;}
+.icon#soundIcon{position:absolute;right:1rem;}
+.logo{font-weight:bold;cursor:pointer;}
+.cards{width:100%;display:flex;flex-direction:column;align-items:center;padding:2mm;box-sizing:border-box;}
+.card{background:#fff;border-radius:12px;padding:5mm;margin:10px auto;box-shadow:0 1px 5px rgba(0,0,0,0.05);max-width:700px;width:100%;box-sizing:border-box;text-align:center;}
+.card h2{margin:0 0 .75rem 0;font-weight:700;}
+.poem p{font-style:italic;transform:skewY(-3deg);font-size:1.2rem;line-height:1.8;}
+.footer-card{font-size:.95rem;}
+.footer-card a{color:#333;text-decoration:underline;}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:1000;display:none;}
+#overlay.active{display:block;}
+#sidebar{position:fixed;top:0;left:0;width:400px;height:100%;background:#fff;z-index:1001;border:none;transition:transform .3s ease;}
+#sidebar.hidden{transform:translateX(-100%);}
+@media(max-width:768px){#sidebar{width:75vw;}}

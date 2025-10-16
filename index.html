@@ -3,51 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Taran Media Projects 2</title>
-  <style>
-    body {
-      font-family: "Inter", sans-serif;
-      background: linear-gradient(135deg, #f4f6f8, #e7ebef);
-      color: #222;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      margin: 0;
-    }
-    h1 { font-size: 2rem; margin-bottom: 1rem; }
-    p { color: #555; margin-bottom: 2rem; }
-    a.project {
-      display: inline-block;
-      padding: 12px 28px;
-      margin: 8px;
-      border-radius: 10px;
-      background: #0077cc;
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    a.project:hover { background: #005fa3; transform: translateY(-2px); }
-    footer {
-      position: absolute;
-      bottom: 20px;
-      font-size: 0.85rem;
-      color: #777;
-    }
-  </style>
+  <title>Главная — Smart Vision</title>
+  <link rel="stylesheet" href="/css/styles-page.css" />
 </head>
 <body>
-  <h1>Проекты Taran Media</h1>
-  <p>Выберите направление:</p>
-
-  <!-- 🔹 обновлённая ссылка на новый Smart Vision -->
-  <a href="https://mysmartvision.netlify.app/smart-vision.html" class="project">🧠 Smart Vision (новая версия)</a>
-  <a href="https://voice-assistant-mvp.netlify.app" class="project">🎙 Voice Assistant MVP</a>
-
-  <footer>© 2025 Greg Taran — Ясность, Интеллект и Свобода</footer>
+  <div id="overlay"></div>
+  <header class="top-bar">
+    <button id="menuToggle" class="icon">&#9776;</button>
+    <div class="logo" id="logo">SMART VISION</div>
+    <button id="soundIcon" class="icon" aria-label="sound">&#128266;</button>
+  </header>
+  <main>
+    <div class="cards">
+      <div class="card poem">
+        <p>
+          Любая мысль может стать визией.<br>
+          Любая визия может стать дорогой.<br>
+          А дорога — источником внутреннего света.<br><br>
+          <strong>Грег Таран | 2025</strong>
+        </p>
+      </div>
+      <div class="card footer-card">
+        <p>
+          <a href="/html/privacy.html">Политика конфиденциальности</a><br>
+          <a href="/html/terms.html">Условия использования</a><br>
+          © 2025 Smart Vision
+        </p>
+      </div>
+    </div>
+  </main>
+  <iframe id="sidebar" src="/html/menu-public.html" class="hidden" title="Меню"></iframe>
+  <script src="/js/script.js"></script>
 </body>
 </html>
