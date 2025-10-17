@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Vision — Calls</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    body { background: #f0f0f0; margin: 0; font-family: sans-serif; }
+    .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    h1 { font-size: 22px; margin-bottom: 10px; }
+    .user-block { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding: 10px 0; }
+    button { background: #fff; border: 1px solid #aaa; padding: 6px 12px; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+    button:hover { background: #eee; }
+    #log { background: #fafafa; border: 1px solid #ccc; border-radius: 10px; padding: 10px; height: 150px; overflow-y: auto; font-size: 14px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📞 Vision Calls</h1>
+    <p id="currentUser">Загрузка...</p>
+    <h3>Доступные пользователи:</h3>
+    <div id="usersList">Загрузка списка...</div>
+
+    <h3>Логи соединения:</h3>
+    <div id="log"></div>
+    <audio id="remoteAudio" autoplay></audio>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+    import { setupVisionCalls } from "../js/vision-call.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "smart-vision-888.firebaseapp.com",
+      projectId: "smart-vision-888"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const logEl = document.getElementById("log");
+    const usersList = document.getElementById("usersList");
+    const audio = document.getElementById("remoteAudio");
+
+    const log = msg => {
+      logEl.innerHTML += msg + "<br>";
+      logEl.scrollTop = logEl.scrollHeight;
+      console.log(msg);
+    };
+
+    onAuthStateChanged(auth, async user => {
+      if (user) {
+        document.getElementById("currentUser").textContent = "Вы вошли как: " + user.email;
+        await setupVisionCalls({ db, auth, usersList, audio, log });
+      } else {
+        document.getElementById("currentUser").textContent = "Вы не авторизованы";
+      }
+    });
+  </script>
+</body>
+</html>
