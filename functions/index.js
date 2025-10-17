@@ -49,3 +49,27 @@ export const saveUser = onRequest(async (req, res) => {
     res.status(500).json({ ok: false, error: err.message });
   }
 });
+
+export const checkUser = onRequest(async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "https://smartvision-test.web.app");
+  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.status(204).send("");
+
+  try {
+    const { email } = req.body || {};
+    if (!email) return res.status(400).json({ ok: false, error: "Email required" });
+
+    const ref = admin.firestore().collection("users").doc(email.toLowerCase());
+    const doc = await ref.get();
+
+    if (doc.exists) {
+      res.json({ ok: true, exists: true, user: doc.data() });
+    } else {
+      res.json({ ok: true, exists: false });
+    }
+  } catch (err) {
+    console.error("checkUser error:", err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
