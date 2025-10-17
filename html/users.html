@@ -1,95 +1,71 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/css/main.css" />
-  <link rel="stylesheet" href="/css/dashboard.css" />
-  <title>Пользователи | Smart Vision</title>
-</head>
-<body>
-  <div class="top-bar">
-    <span id="user-info"></span>
-    <a id="logout" class="logout-link">Выйти</a>
-  </div>
+<div class="main-block">
+  <h2>Пользователи (тестовая база)</h2>
+  <p>Ниже показаны все пользователи, сохранённые в Firestore.</p>
 
-  <div class="main-block">
-    <h2>Пользователи (тестовая база)</h2>
-    <p>Ниже показаны все пользователи, сохранённые в Firestore.</p>
+  <button id="refreshBtn" class="button primary">🔄 Обновить</button>
 
-    <button id="refreshBtn" class="button primary">🔄 Обновить</button>
+  <div id="usersList" class="users-list"></div>
+  <p id="userCount" class="small text-right"></p>
+</div>
 
-    <table class="table" style="margin-top: 20px;">
-      <thead>
-        <tr>
-          <th>Имя</th>
-          <th>Email</th>
-          <th>Создан</th>
-          <th>Обновлён</th>
-        </tr>
-      </thead>
-      <tbody id="usersBody">
-        <tr><td colspan="4" class="text-center">Загрузка...</td></tr>
-      </tbody>
-    </table>
+<style>
+  .users-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .user-card {
+    background: white;
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    line-height: 1.4;
+  }
+  .user-card b {
+    color: #6c63ff;
+  }
+  .user-card small {
+    color: #666;
+    font-size: 0.9em;
+  }
+</style>
 
-    <p id="userCount" class="small text-right"></p>
-  </div>
+<script type="module">
+  const refreshBtn = document.getElementById("refreshBtn");
+  const list = document.getElementById("usersList");
+  const countEl = document.getElementById("userCount");
 
-  <script type="module">
-    const user = JSON.parse(localStorage.getItem("user"));
-    const info = document.getElementById("user-info");
+  async function loadUsers() {
+    list.innerHTML = `<p>Загрузка...</p>`;
+    try {
+      const res = await fetch("https://us-central1-smart-vision-888.cloudfunctions.net/listUsers");
+      const data = await res.json();
 
-    if (!user || !user.name || !user.email) {
-      window.location.href = "/html/login.html";
-    } else {
-      info.textContent = `Привет, ${user.name} (${user.email})`;
-    }
+      if (!data.ok || !Array.isArray(data.users)) throw new Error("Invalid data");
 
-    document.getElementById("logout").addEventListener("click", () => {
-      localStorage.removeItem("user");
-      window.location.href = "/html/login.html";
-    });
-
-    const body = document.getElementById("usersBody");
-    const countEl = document.getElementById("userCount");
-    const refreshBtn = document.getElementById("refreshBtn");
-
-    async function loadUsers() {
-      body.innerHTML = `<tr><td colspan="4" class="text-center">Загрузка...</td></tr>`;
-      try {
-        const res = await fetch("https://us-central1-smart-vision-888.cloudfunctions.net/listUsers");
-        const data = await res.json();
-
-        if (!data.ok || !Array.isArray(data.users)) throw new Error("Invalid data");
-
-        if (data.users.length === 0) {
-          body.innerHTML = `<tr><td colspan="4" class="text-center">Нет пользователей</td></tr>`;
-          countEl.textContent = "";
-          return;
-        }
-
-        body.innerHTML = data.users
-          .map(
-            (u) => `
-            <tr>
-              <td>${u.name || "-"}</td>
-              <td>${u.email || "-"}</td>
-              <td>${u.createdAt ? new Date(u.createdAt).toLocaleString() : "-"}</td>
-              <td>${u.updatedAt ? new Date(u.updatedAt).toLocaleString() : "-"}</td>
-            </tr>`
-          )
-          .join("");
-
-        countEl.textContent = `Всего пользователей: ${data.users.length}`;
-      } catch (err) {
-        console.error(err);
-        body.innerHTML = `<tr><td colspan="4" class="text-center">Ошибка загрузки</td></tr>`;
+      if (data.users.length === 0) {
+        list.innerHTML = `<p>Нет пользователей</p>`;
+        countEl.textContent = "";
+        return;
       }
-    }
 
-    refreshBtn.addEventListener("click", loadUsers);
-    loadUsers();
-  </script>
-</body>
-</html>
+      list.innerHTML = data.users.map((u, i) => `
+        <div class="user-card">
+          <b>${i + 1}. ${u.name || "Без имени"}</b>  
+          <div>${u.email || "-"}</div>
+          <small>Создан: ${u.createdAt ? new Date(u.createdAt).toLocaleString() : "-"}</small><br>
+          <small>Обновлён: ${u.updatedAt ? new Date(u.updatedAt).toLocaleString() : "-"}</small>
+        </div>
+      `).join("");
+
+      countEl.textContent = `Всего пользователей: ${data.users.length}`;
+    } catch (err) {
+      console.error(err);
+      list.innerHTML = `<p>Ошибка загрузки данных</p>`;
+    }
+  }
+
+  refreshBtn.addEventListener("click", loadUsers);
+  loadUsers();
+</script>
