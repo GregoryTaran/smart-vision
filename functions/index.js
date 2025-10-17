@@ -21,15 +21,14 @@ const SHARED_SECRETS = [
   defineSecret("ONESIGNAL_APP_ID"),
   defineSecret("ONESIGNAL_REST_API_KEY"),
   defineSecret("HF_TOKEN"),
-  defineSecret("GOOGLE_KEY_JSON")
+  defineSecret("GOOGLE_KEY_JSON"),
 ];
 
-/* ============================================================
-   ⚙️ 2. Общие настройки функций
-   ============================================================ */
-const defaultOptions = { secrets: SHARED_SECRETS };
+export const defaultOptions = { secrets: SHARED_SECRETS };
 
-// Инициализация Firebase Admin SDK (один раз)
+/* ============================================================
+   ⚙️ 2. Инициализация Firebase Admin SDK
+   ============================================================ */
 if (!admin.apps.length) admin.initializeApp();
 const db = admin.firestore();
 
@@ -80,7 +79,7 @@ export const listUsers = onRequest(defaultOptions, async (_req, res) => {
   if (setCORS(res, _req)) return;
   try {
     const snapshot = await db.collection("users").orderBy("createdAt", "desc").get();
-    const users = snapshot.docs.map(doc => doc.data());
+    const users = snapshot.docs.map((doc) => doc.data());
     res.json({ ok: true, users });
   } catch (err) {
     console.error("listUsers error:", err);
@@ -102,18 +101,23 @@ export const checkSecrets = onRequest(defaultOptions, async (_req, res) => {
   }
   res.json(result);
 });
-/* ============================================================
-   🔐 getFirebaseConfig — безопасная выдача firebaseConfig
-   ============================================================ */
-import { defineSecret } from "firebase-functions/params";
-const FIREBASE_CONFIG_JSON = defineSecret("FIREBASE_CONFIG_JSON");
 
-export const getFirebaseConfig = onRequest({ secrets: [FIREBASE_CONFIG_JSON] }, async (_req, res) => {
-  try {
-    const configString = FIREBASE_CONFIG_JSON.value();
-    const config = JSON.parse(configString);
-    res.json({ ok: true, config });
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message });
+/* ============================================================
+   🔐 7. getFirebaseConfig — безопасная выдача firebaseConfig
+   ============================================================ */
+const FIREBASE_CONFIG_JSON = SHARED_SECRETS.find(
+  (s) => s.name === "FIREBASE_CONFIG_JSON"
+);
+
+export const getFirebaseConfig = onRequest(
+  { secrets: [FIREBASE_CONFIG_JSON] },
+  async (_req, res) => {
+    try {
+      const configString = FIREBASE_CONFIG_JSON.value();
+      const config = JSON.parse(configString);
+      res.json({ ok: true, config });
+    } catch (err) {
+      res.status(500).json({ ok: false, error: err.message });
+    }
   }
-});
+);
