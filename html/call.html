@@ -26,41 +26,41 @@
     <audio id="remoteAudio" autoplay></audio>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- 🔹 Общий скрипт авторизации -->
+  <script src="../js/auth-check.js"></script>
+
+  <!-- 🔹 Основная логика звонков -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
     import { setupVisionCalls } from "../js/vision-call.js";
 
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "smart-vision-888.firebaseapp.com",
-      projectId: "smart-vision-888"
-    };
+    // Дожидаемся, пока auth-check подтянет пользователя
+    const checkInterval = setInterval(async () => {
+      if (window.firebaseApp && window.firebaseAuth && window.firebaseDb) {
+        clearInterval(checkInterval);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+        const db = window.firebaseDb;
+        const auth = window.firebaseAuth;
+        const logEl = document.getElementById("log");
+        const usersList = document.getElementById("usersList");
+        const audio = document.getElementById("remoteAudio");
 
-    const logEl = document.getElementById("log");
-    const usersList = document.getElementById("usersList");
-    const audio = document.getElementById("remoteAudio");
+        const log = msg => {
+          logEl.innerHTML += msg + "<br>";
+          logEl.scrollTop = logEl.scrollHeight;
+          console.log(msg);
+        };
 
-    const log = msg => {
-      logEl.innerHTML += msg + "<br>";
-      logEl.scrollTop = logEl.scrollHeight;
-      console.log(msg);
-    };
-
-    onAuthStateChanged(auth, async user => {
-      if (user) {
-        document.getElementById("currentUser").textContent = "Вы вошли как: " + user.email;
-        await setupVisionCalls({ db, auth, usersList, audio, log });
-      } else {
-        document.getElementById("currentUser").textContent = "Вы не авторизованы";
+        if (auth.currentUser) {
+          document.getElementById("currentUser").textContent =
+            "Вы вошли как: " + auth.currentUser.email;
+          await setupVisionCalls({ db, auth, usersList, audio, log });
+        } else {
+          document.getElementById("currentUser").textContent =
+            "Вы не авторизованы. Переход на страницу входа...";
+          setTimeout(() => (window.location.href = "login.html"), 1500);
+        }
       }
-    });
+    }, 300);
   </script>
 </body>
 </html>
