@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vision WebRTC Audio Test</title>
+</head>
+<body>
+  <h2>🎧 Vision WebRTC Test</h2>
+  <button id="startCall">📞 Создать звонок</button>
+  <button id="answerCall">✅ Ответить</button>
+  <textarea id="signal" placeholder="Вставь сюда сообщение от собеседника"></textarea>
+  <audio id="remoteAudio" autoplay></audio>
+
+  <script>
+    const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+    const signalBox = document.getElementById('signal');
+    const audio = document.getElementById('remoteAudio');
+
+    pc.onicecandidate = e => {
+      if (e.candidate) return;
+      signalBox.value = JSON.stringify(pc.localDescription);
+    };
+    pc.ontrack = e => (audio.srcObject = e.streams[0]);
+
+    async function getMic() {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => pc.addTrack(t, stream));
+    }
+
+    document.getElementById('startCall').onclick = async () => {
+      await getMic();
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+    };
+
+    document.getElementById('answerCall').onclick = async () => {
+      await getMic();
+      const desc = JSON.parse(signalBox.value);
+      await pc.setRemoteDescription(desc);
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      signalBox.value = JSON.stringify(answer);
+    };
+
+    // вставка полученного ответа от собеседника
+    signalBox.addEventListener('input', async () => {
+      try {
+        const data = JSON.parse(signalBox.value);
+        if (!pc.currentRemoteDescription) await pc.setRemoteDescription(data);
+      } catch {}
+    });
+  </script>
+</body>
+</html>
