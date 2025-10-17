@@ -1,48 +1,81 @@
-/* === Верхний блок пользователя === */
+/* === DASHBOARD SMART VISION === */
+
+/* Контейнер всей страницы */
+body {
+  background-color: #e6e6e6;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px 0;
+  box-sizing: border-box;
+}
+
+/* Верхний блок с именем и выходом */
 .top-bar {
   background: #fff;
-  padding: 8px 16px;
+  width: 100%;
+  max-width: 800px;
+  padding: 10px 16px;
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-  font-size: 12px;
+  font-size: 13px;
   color: #555;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 420px;
-  width: 100%;
+  margin-bottom: 12px;
   box-sizing: border-box;
-  margin: 20px auto 10px;
 }
 
 .logout-link {
   color: #4285f4;
   cursor: pointer;
   text-decoration: none;
-  margin-left: 8px;
 }
 
 .logout-link:hover {
   text-decoration: underline;
 }
 
-/* === Основной белый блок === */
+/* Основной блок контента */
 .main-block {
   background: #fff;
-  max-width: 700px;
   width: 100%;
-  padding: 24px;
-  margin: 10px auto 40px;
+  max-width: 800px;
+  padding: 28px;
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   box-sizing: border-box;
 }
 
-/* === Мобильная адаптация === */
+h2 {
+  margin-top: 0;
+  color: #222;
+}
+
+p {
+  color: #444;
+  line-height: 1.6;
+}
+
+/* Адаптив для телефона */
 @media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
   .top-bar,
   .main-block {
-    margin: 12px;
+    max-width: 100%;
+    margin: 0 0 10px 0;
     border-radius: 10px;
+    padding: 20px;
+  }
+
+  .top-bar {
+    font-size: 12px;
   }
 }
