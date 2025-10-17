@@ -8,32 +8,25 @@
   <link rel="stylesheet" href="/css/dashboard.css" />
 </head>
 <body>
+  <!-- Верхняя панель -->
   <div class="client-bar">
     <span id="user-info"></span>
     <a id="logout" class="logout-link">Выйти</a>
   </div>
 
+  <!-- Основной блок -->
   <div class="main-block">
     <h2>Добро пожаловать в Smart Vision</h2>
-    <p>Здесь появятся ваши инструменты и сервисы.</p>
+    <p>Выберите нужный раздел:</p>
 
-    <a href="/html/vision.html" class="btn">Открыть Vision →</a>
+    <div class="links">
+      <a href="/html/vision.html" class="button">Vision →</a>
+      <a href="/html/users.html" class="button">Пользователи →</a>
+      <a href="/html/user-info.html" class="button">Инфо о пользователе →</a>
+    </div>
   </div>
 
-  <script type="module">
-    const user = JSON.parse(localStorage.getItem("user"));
-    const info = document.getElementById("user-info");
-
-    if (!user || !user.email || !user.name) {
-      window.location.href = "/html/login.html";
-    } else {
-      info.textContent = `${user.name} (${user.email})`;
-    }
-
-    document.getElementById("logout").addEventListener("click", () => {
-      localStorage.removeItem("user");
-      window.location.href = "/html/login.html";
-    });
-  </script>
+  <!-- Проверка авторизации -->
+  <script type="module" src="/js/auth-check.js"></script>
 </body>
 </html>

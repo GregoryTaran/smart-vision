@@ -33,21 +33,8 @@
     <p id="userCount" class="text-small text-right"></p>
   </div>
 
+  <script type="module" src="/js/auth-check.js"></script>
   <script type="module">
-    const user = JSON.parse(localStorage.getItem("user"));
-    const info = document.getElementById("user-info");
-
-    if (!user || !user.email || !user.name) {
-      window.location.href = "/html/login.html";
-    } else {
-      info.textContent = `${user.name} (${user.email})`;
-    }
-
-    document.getElementById("logout").addEventListener("click", () => {
-      localStorage.removeItem("user");
-      window.location.href = "/html/login.html";
-    });
-
     const list = document.getElementById("usersList");
     const countEl = document.getElementById("userCount");
     const refreshBtn = document.getElementById("refreshBtn");

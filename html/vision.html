@@ -3,35 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Vision — Vision Service</title>
+  <title>Smart Vision — Vision</title>
+
   <link rel="stylesheet" href="/css/main.css" />
   <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/vision.css" />
 </head>
+
 <body>
   <div class="client-bar">
     <span id="user-info"></span>
     <a id="logout" class="logout-link">Выйти</a>
   </div>
 
-  <div class="main-block">
-    <h2>Vision Service</h2>
-    <p>Это экспериментальный модуль Smart Vision. Здесь появятся инструменты для создания, анализа и визуализации ваших визий.</p>
+  <div class="main-block vision-container">
+    <h2>Модуль Vision</h2>
+    <p>Здесь появятся интеллектуальные инструменты Smart Vision.</p>
   </div>
 
-  <script type="module">
-    const user = JSON.parse(localStorage.getItem("user"));
-    const info = document.getElementById("user-info");
-
-    if (!user || !user.email || !user.name) {
-      window.location.href = "/html/login.html";
-    } else {
-      info.textContent = `${user.name} (${user.email})`;
-    }
-
-    document.getElementById("logout").addEventListener("click", () => {
-      localStorage.removeItem("user");
-      window.location.href = "/html/login.html";
-    });
-  </script>
+  <script type="module" src="/js/auth-check.js"></script>
+  <script type="module" src="/js/vision.js"></script>
 </body>
 </html>

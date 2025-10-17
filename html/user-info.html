@@ -18,23 +18,12 @@
     <div id="info" class="user-card"></div>
   </div>
 
+  <script type="module" src="/js/auth-check.js"></script>
   <script type="module">
-    const user = JSON.parse(localStorage.getItem("user"));
-    const infoTop = document.getElementById("user-info");
-    const infoDiv = document.getElementById("info");
-
-    if (!user || !user.email || !user.name) {
-      window.location.href = "/html/login.html";
-    } else {
-      infoTop.textContent = `${user.name} (${user.email})`;
-    }
-
-    document.getElementById("logout").addEventListener("click", () => {
-      localStorage.removeItem("user");
-      window.location.href = "/html/login.html";
-    });
-
     async function getUserInfo() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const infoDiv = document.getElementById("info");
+
       const userInfo = {
         "Имя": user.name,
         "E-mail": user.email,
