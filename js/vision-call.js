@@ -1,10 +1,23 @@
 // js/vision-call.js
-import { collection, getDocs, doc, setDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  onSnapshot,
+  updateDoc,
+  getFirestore
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
-export async function setupVisionCalls({ db, auth, usersList, audio, log }) {
+export async function setupVisionCalls({ db, usersList, audio, log }) {
   const servers = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
   let pc, localStream;
-  const currentUserEmail = auth.currentUser.email;
+  const currentUserEmail = window.currentUser?.email;
+
+  if (!currentUserEmail) {
+    log("⚠️ Пользователь не найден (нет currentUser).");
+    return;
+  }
 
   const logMsg = msg => {
     log(msg);
@@ -45,8 +58,16 @@ export async function setupVisionCalls({ db, auth, usersList, audio, log }) {
     const pc = await initPeer();
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
+
     const callRef = doc(collection(db, "calls"));
-    await setDoc(callRef, { from: currentUserEmail, to: emailTo, offer });
+    await setDoc(callRef, {
+      from: currentUserEmail,
+      to: emailTo,
+      offer,
+      status: "calling",
+      createdAt: new Date().toISOString()
+    });
+
     logMsg(`📨 Звонок отправлен: ${emailTo}`);
 
     onSnapshot(callRef, async snap => {
@@ -69,7 +90,11 @@ export async function setupVisionCalls({ db, auth, usersList, audio, log }) {
           await pc.setRemoteDescription(data.offer);
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
-          await updateDoc(change.doc.ref, { answer });
+          await updateDoc(change.doc.ref, {
+            answer,
+            status: "connected",
+            answeredAt: new Date().toISOString()
+          });
           logMsg("📡 Ответ отправлен");
         }
       }

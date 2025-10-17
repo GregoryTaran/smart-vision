@@ -1,6 +1,6 @@
 // ✅ Единая проверка авторизации для всех страниц Smart Vision
 
-export function checkAuth() {
+function checkAuth() {
   const user = JSON.parse(localStorage.getItem("user"));
   const info = document.getElementById("user-info");
   const logout = document.getElementById("logout");
@@ -21,6 +21,9 @@ export function checkAuth() {
       window.location.href = "/html/login.html";
     });
   }
+
+  // 🔹 Делаем пользователя доступным глобально
+  window.currentUser = user;
 }
 
 // Автоматический запуск при подключении
