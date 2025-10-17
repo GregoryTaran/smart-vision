@@ -3,28 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="stylesheet" href="/css/main.css" />
-<link rel="stylesheet" href="/css/login.css" />
-
   <title>Вход | Smart Vision</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/login.css" />
 </head>
 <body>
   <div class="login-container">
-    <h1>Smart Vision</h1>
+    <h2>Smart Vision</h2>
+    <p>Введите имя и e-mail, чтобы войти</p>
+
     <form id="loginForm">
-      <label for="name">Ваше имя:</label>
-      <input type="text" id="name" maxlength="30" required placeholder="Введите имя" />
-
-      <label for="email">Ваш e-mail:</label>
-      <input type="email" id="email" required placeholder="Введите e-mail" />
-
-      <div class="button-wrapper">
-        <button type="submit" class="white-button">Поехали!</button>
-      </div>
+      <input type="text" id="name" placeholder="Имя" required />
+      <input type="email" id="email" placeholder="E-mail" required />
+      <button type="submit" class="button primary">Поехали!</button>
     </form>
+
+    <p id="loginStatus" class="small"></p>
   </div>
 
-  <script type="module" src="/js/login.js"></script>
+  <script type="module">
+    const form = document.getElementById("loginForm");
+    const status = document.getElementById("loginStatus");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      try {
+        const res = await fetch("https://us-central1-smart-vision-888.cloudfunctions.net/saveUser", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email })
+        });
+
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || "Ошибка авторизации");
+
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.location.href = "/html/dashboard.html";
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Ошибка входа. Проверьте данные.";
+      }
+    });
+  </script>
 </body>
 </html>

@@ -3,31 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Vision — Dashboard</title>
   <link rel="stylesheet" href="/css/main.css" />
-<link rel="stylesheet" href="/css/dashboard.css" />
-
-
-  <title>Dashboard | Smart Vision</title>
+  <link rel="stylesheet" href="/css/dashboard.css" />
 </head>
 <body>
-  <div class="top-bar">
+  <div class="client-bar">
     <span id="user-info"></span>
     <a id="logout" class="logout-link">Выйти</a>
   </div>
 
   <div class="main-block">
     <h2>Добро пожаловать в Smart Vision</h2>
-    <p>Это пример содержимого дашборда. Здесь позже появятся разделы и сервисы.</p>
+    <p>Здесь появятся ваши инструменты и сервисы.</p>
   </div>
 
   <script type="module">
     const user = JSON.parse(localStorage.getItem("user"));
     const info = document.getElementById("user-info");
 
-    if (!user || !user.name || !user.email) {
+    if (!user || !user.email || !user.name) {
       window.location.href = "/html/login.html";
     } else {
-      info.textContent = `Привет, ${user.name} (${user.email})`;
+      info.textContent = `${user.name} (${user.email})`;
     }
 
     document.getElementById("logout").addEventListener("click", () => {

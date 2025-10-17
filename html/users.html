@@ -4,34 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Пользователи | Smart Vision</title>
-
   <link rel="stylesheet" href="/css/main.css" />
   <link rel="stylesheet" href="/css/dashboard.css" />
+  <style>
+    .user-card {
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    .user-card:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+  </style>
 </head>
 <body>
-  <div class="top-bar">
+  <div class="client-bar">
     <span id="user-info"></span>
     <a id="logout" class="logout-link">Выйти</a>
   </div>
 
   <div class="main-block">
     <h2>Пользователи (тестовая база)</h2>
-    <p>Ниже показаны все пользователи, сохранённые в Firestore.</p>
-
-    <button id="refreshBtn" class="button primary">🔄 Обновить</button>
+    <p>Список всех пользователей, сохранённых в Firestore.</p>
+    <button id="refreshBtn" class="button">Обновить</button>
 
     <div id="usersList" class="users-list"></div>
-    <p id="userCount" class="small text-right"></p>
+    <p id="userCount" class="text-small text-right"></p>
   </div>
 
   <script type="module">
     const user = JSON.parse(localStorage.getItem("user"));
     const info = document.getElementById("user-info");
 
-    if (!user || !user.name || !user.email) {
+    if (!user || !user.email || !user.name) {
       window.location.href = "/html/login.html";
     } else {
-      info.textContent = `Привет, ${user.name} (${user.email})`;
+      info.textContent = `${user.name} (${user.email})`;
     }
 
     document.getElementById("logout").addEventListener("click", () => {

@@ -1,78 +1,25 @@
-/* === SMART VISION DASHBOARD === */
+/* === DASHBOARD SPECIFIC STYLES === */
 
 .dashboard-content {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  gap: 20px;
 }
 
 .card {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 18px 20px;
 }
 
 .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.page-title {
-  font-size: 1.4rem;
   font-weight: 600;
   color: #222;
+  margin-bottom: 10px;
 }
 
-/* === USERS LIST === */
-.users-list {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.user-card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 14px 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  line-height: 1.5;
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
-}
-
-.user-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transform: translateY(-2px);
-}
-
-.user-card b {
-  color: #222;
-  font-weight: 600;
-}
-
-.user-card small {
-  color: #777;
-  font-size: 0.9em;
-}
-
-/* === RESPONSIVE === */
-@media (max-width: 768px) {
-  .main-block {
-    margin: 40px 10px;
-    padding: 16px;
-  }
-
-  .top-bar {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .button {
-    width: 100%;
-    justify-content: center;
-  }
+.card p {
+  margin-bottom: 8px;
+  color: #555;
 }
