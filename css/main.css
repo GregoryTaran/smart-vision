@@ -54,3 +54,33 @@ body {
     padding: 20px;
   }
 }
+/* === BUTTONS === */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+.button.primary {
+  background-color: #6c63ff;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.button.primary:hover {
+  background-color: #5a54d1;
+  transform: translateY(-1px);
+}
+
+.button.primary:active {
+  background-color: #4c46b5;
+  transform: translateY(1px);
+}
+

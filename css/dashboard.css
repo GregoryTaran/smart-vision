@@ -79,3 +79,27 @@ p {
     font-size: 12px;
   }
 }
+
+.users-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  line-height: 1.5;
+}
+
+.user-card b {
+  color: #6c63ff;
+}
+
+.user-card small {
+  color: #666;
+  font-size: 0.9em;
+}
