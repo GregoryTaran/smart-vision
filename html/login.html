@@ -3,21 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../css/1.css" />
+  <link rel="stylesheet" href="/css/login.css" />
   <title>Вход | Smart Vision</title>
 </head>
 <body>
-  <div class="content">
+  <div class="login-container">
     <h1>Smart Vision</h1>
     <form id="loginForm">
-      <label>Ваше имя:</label>
-      <input type="text" id="name" maxlength="30" required />
-      <label>Ваш e-mail:</label>
-      <input type="email" id="email" required />
-      <button type="submit">Поехали!</button>
+      <label for="name">Ваше имя:</label>
+      <input type="text" id="name" maxlength="30" required placeholder="Введите имя" />
+
+      <label for="email">Ваш e-mail:</label>
+      <input type="email" id="email" required placeholder="Введите e-mail" />
+
+      <div class="button-wrapper">
+        <button type="submit" class="white-button">Поехали!</button>
+      </div>
     </form>
   </div>
-  <script type="module" src="../js/login.js"></script>
+
+  <script type="module" src="/js/login.js"></script>
 </body>
 </html>
-
