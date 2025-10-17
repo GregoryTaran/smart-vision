@@ -1,7 +1,8 @@
 {
   "functions": {
     "source": "functions",
-    "runtime": "nodejs20"
+    "runtime": "nodejs20",
+    "ignore": [".env", ".local.env"]
   },
   "hosting": {
     "site": "smartvision-test",
@@ -9,11 +10,14 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "functions/**"
     ],
     "cleanUrls": true,
     "rewrites": [
       { "source": "/api/**", "function": "ask" },
+      { "source": "/saveUser", "function": "saveUser" },
+      { "source": "/checkUser", "function": "checkUser" },
       { "source": "**", "destination": "/index.html" }
     ]
   }

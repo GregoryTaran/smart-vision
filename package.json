@@ -1,16 +1,17 @@
 {
   "name": "smart-vision",
   "version": "1.0.0",
-  "description": "Smart Vision — AI Voice Assistant Project",
+  "description": "Smart Vision — AI Voice Assistant and Dashboard",
+  "private": true,
   "scripts": {
     "start": "npx serve .",
     "dev": "firebase emulators:start --only hosting,functions",
-    "deploy": "firebase deploy"
+    "deploy": "firebase deploy --only hosting,functions",
+    "deploy:all": "firebase deploy" 
   },
-  "dependencies": {},
-  "devDependencies": {},
   "engines": {
     "node": "20"
   },
-  "private": true
+  "dependencies": {},
+  "devDependencies": {}
 }
