@@ -14,11 +14,23 @@
       "functions/**"
     ],
     "cleanUrls": true,
+    "trailingSlash": false,
     "rewrites": [
       { "source": "/api/**", "function": "ask" },
       { "source": "/saveUser", "function": "saveUser" },
       { "source": "/checkUser", "function": "checkUser" },
       { "source": "**", "destination": "/index.html" }
     ]
+  },
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "ui": {
+      "enabled": true
+    }
   }
 }
