@@ -1,6 +1,8 @@
 import { onRequest } from "firebase-functions/v2/https";
 import admin from "firebase-admin";
 import { setCORS } from "./cors.js"; // ✅ универсальный CORS
+export { speakToWhisper } from "./speakToWhisper.js";
+
 
 // Инициализация Firebase Admin SDK
 if (!admin.apps.length) admin.initializeApp();
