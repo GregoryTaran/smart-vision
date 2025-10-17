@@ -9,34 +9,36 @@
   <link rel="stylesheet" href="/css/dashboard.css" />
 </head>
 <body>
-  <div id="menu"></div>
+  <div class="main-wrapper">
+    <aside id="menu" class="sidebar"></aside>
 
-  <main class="content-block">
-    <div class="card">
-      <div class="card-header between">
-        <h1 class="page-title">Пользователи (тестовая база)</h1>
-        <button id="refreshBtn" class="button primary">🔄 Обновить</button>
+    <main class="dashboard-content">
+      <div class="card">
+        <div class="card-header between">
+          <h1 class="page-title">Пользователи (тестовая база)</h1>
+          <button id="refreshBtn" class="button primary">🔄 Обновить</button>
+        </div>
+
+        <div class="table-container">
+          <table class="table users-table">
+            <thead>
+              <tr>
+                <th>Имя</th>
+                <th>Email</th>
+                <th>Создан</th>
+                <th>Обновлён</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody">
+              <tr><td colspan="4" class="text-center">Загрузка...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="userCount" class="table-footer text-right small"></div>
       </div>
-
-      <div class="table-container">
-        <table class="table users-table">
-          <thead>
-            <tr>
-              <th>Имя</th>
-              <th>Email</th>
-              <th>Создан</th>
-              <th>Обновлён</th>
-            </tr>
-          </thead>
-          <tbody id="usersBody">
-            <tr><td colspan="4" class="text-center">Загрузка...</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div id="userCount" class="table-footer text-right small"></div>
-    </div>
-  </main>
+    </main>
+  </div>
 
   <script src="/js/menu.js" type="module"></script>
   <script src="/js/script.js" type="module"></script>
