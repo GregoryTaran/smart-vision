@@ -7,7 +7,7 @@
     "start": "npx serve .",
     "dev": "firebase emulators:start --only hosting,functions",
     "deploy": "firebase deploy --only hosting,functions",
-    "deploy:all": "firebase deploy" 
+    "deploy:all": "firebase deploy"
   },
   "engines": {
     "node": "20"

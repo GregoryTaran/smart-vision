@@ -1,15 +1,16 @@
 import { onRequest } from "firebase-functions/v2/https";
 import admin from "firebase-admin";
-import { setCORS } from "./cors.js";
+import { setCORS } from "./cors.js"; // ✅ подключаем универсальный CORS
 
+// Инициализация Firebase Admin SDK
 if (!admin.apps.length) admin.initializeApp();
 const db = admin.firestore();
 
 /**
- * Сохранение или обновление пользователя
+ * 🔹 Сохранение или обновление пользователя
  */
 export const saveUser = onRequest(async (req, res) => {
-  if (setCORS(res, req)) return; // универсальный CORS
+  if (setCORS(res, req)) return; // применяем CORS
 
   try {
     const { email, name } = req.body || {};
@@ -41,10 +42,10 @@ export const saveUser = onRequest(async (req, res) => {
 });
 
 /**
- * Проверка существования пользователя по email
+ * 🔹 Проверка существования пользователя по email
  */
 export const checkUser = onRequest(async (req, res) => {
-  if (setCORS(res, req)) return; // универсальный CORS
+  if (setCORS(res, req)) return; // применяем CORS
 
   try {
     const { email } = req.body || {};

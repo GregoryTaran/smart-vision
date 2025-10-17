@@ -1,6 +1,9 @@
 // --- Smart Vision Universal CORS Config ---
+// Этот модуль подключается ко всем Cloud Functions
+// и навсегда разрешает все твои домены и поддомены.
+
 export function setCORS(res, req) {
-  // Разрешаем все твои домены и поддомены
+  // Разрешаем все сайты smartvision.life и web.app
   const ALLOWED_PATTERNS = [
     /\.smartvision\.life$/,
     /\.web\.app$/
@@ -13,11 +16,12 @@ export function setCORS(res, req) {
     res.set("Access-Control-Allow-Origin", origin);
   }
 
-  // Разрешённые методы и заголовки
+  // Общие правила CORS
   res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.set("Access-Control-Allow-Headers", "Content-Type");
+  res.set("Access-Control-Allow-Credentials", "true");
 
-  // Ответ для preflight-запроса
+  // Обработка preflight-запроса (OPTIONS)
   if (req.method === "OPTIONS") {
     res.status(204).send("");
     return true; // прерываем выполнение функции
