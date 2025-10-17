@@ -3,51 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Пользователи — Smart Vision</title>
-
-  <!-- ✅ Работает и локально, и на сервере -->
-  <link rel="stylesheet" href="../css/main.css" />
-  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <title>Пользователи | Smart Vision</title>
 </head>
 <body>
-  <div class="main-wrapper">
-    <!-- Левое меню -->
-    <aside id="menu" class="sidebar"></aside>
-
-    <!-- Основной контент -->
-    <main class="dashboard-content">
-      <div class="card">
-        <div class="card-header between">
-          <h1 class="page-title">Пользователи (тестовая база)</h1>
-          <button id="refreshBtn" class="button primary">🔄 Обновить</button>
-        </div>
-
-        <div class="table-container">
-          <table class="table users-table">
-            <thead>
-              <tr>
-                <th>Имя</th>
-                <th>Email</th>
-                <th>Создан</th>
-                <th>Обновлён</th>
-              </tr>
-            </thead>
-            <tbody id="usersBody">
-              <tr><td colspan="4" class="text-center">Загрузка...</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div id="userCount" class="table-footer text-right small"></div>
-      </div>
-    </main>
+  <div class="top-bar">
+    <span id="user-info"></span>
+    <a id="logout" class="logout-link">Выйти</a>
   </div>
 
-  <!-- ✅ Подключаем общее меню и скрипты -->
-  <script src="../js/menu.js" type="module"></script>
-  <script src="../js/script.js" type="module"></script>
+  <div class="main-block">
+    <h2>Пользователи (тестовая база)</h2>
+    <p>Ниже показаны все пользователи, сохранённые в Firestore.</p>
+
+    <button id="refreshBtn" class="button primary">🔄 Обновить</button>
+
+    <table class="table" style="margin-top: 20px;">
+      <thead>
+        <tr>
+          <th>Имя</th>
+          <th>Email</th>
+          <th>Создан</th>
+          <th>Обновлён</th>
+        </tr>
+      </thead>
+      <tbody id="usersBody">
+        <tr><td colspan="4" class="text-center">Загрузка...</td></tr>
+      </tbody>
+    </table>
+
+    <p id="userCount" class="small text-right"></p>
+  </div>
 
   <script type="module">
+    const user = JSON.parse(localStorage.getItem("user"));
+    const info = document.getElementById("user-info");
+
+    if (!user || !user.name || !user.email) {
+      window.location.href = "/html/login.html";
+    } else {
+      info.textContent = `Привет, ${user.name} (${user.email})`;
+    }
+
+    document.getElementById("logout").addEventListener("click", () => {
+      localStorage.removeItem("user");
+      window.location.href = "/html/login.html";
+    });
+
     const body = document.getElementById("usersBody");
     const countEl = document.getElementById("userCount");
     const refreshBtn = document.getElementById("refreshBtn");
@@ -66,14 +69,17 @@
           return;
         }
 
-        body.innerHTML = data.users.map(u => `
-          <tr class="fade-in">
-            <td>${u.name || "-"}</td>
-            <td>${u.email || "-"}</td>
-            <td>${u.createdAt ? new Date(u.createdAt).toLocaleString() : "-"}</td>
-            <td>${u.updatedAt ? new Date(u.updatedAt).toLocaleString() : "-"}</td>
-          </tr>
-        `).join("");
+        body.innerHTML = data.users
+          .map(
+            (u) => `
+            <tr>
+              <td>${u.name || "-"}</td>
+              <td>${u.email || "-"}</td>
+              <td>${u.createdAt ? new Date(u.createdAt).toLocaleString() : "-"}</td>
+              <td>${u.updatedAt ? new Date(u.updatedAt).toLocaleString() : "-"}</td>
+            </tr>`
+          )
+          .join("");
 
         countEl.textContent = `Всего пользователей: ${data.users.length}`;
       } catch (err) {
