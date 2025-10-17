@@ -1,6 +1,6 @@
 import { onRequest } from "firebase-functions/v2/https";
 import admin from "firebase-admin";
-import { setCORS } from "./cors.js"; // ✅ подключаем универсальный CORS
+import { setCORS } from "./cors.js"; // ✅ универсальный CORS
 
 // Инициализация Firebase Admin SDK
 if (!admin.apps.length) admin.initializeApp();
@@ -10,7 +10,7 @@ const db = admin.firestore();
  * 🔹 Сохранение или обновление пользователя
  */
 export const saveUser = onRequest(async (req, res) => {
-  if (setCORS(res, req)) return; // применяем CORS
+  if (setCORS(res, req)) return;
 
   try {
     const { email, name } = req.body || {};
@@ -45,7 +45,7 @@ export const saveUser = onRequest(async (req, res) => {
  * 🔹 Проверка существования пользователя по email
  */
 export const checkUser = onRequest(async (req, res) => {
-  if (setCORS(res, req)) return; // применяем CORS
+  if (setCORS(res, req)) return;
 
   try {
     const { email } = req.body || {};
@@ -63,6 +63,22 @@ export const checkUser = onRequest(async (req, res) => {
     }
   } catch (err) {
     console.error("checkUser error:", err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+/**
+ * 🔹 Получение списка всех пользователей (для страницы /html/users.html)
+ */
+export const listUsers = onRequest(async (req, res) => {
+  if (setCORS(res, req)) return;
+
+  try {
+    const snapshot = await db.collection("users").orderBy("createdAt", "desc").get();
+    const users = snapshot.docs.map(doc => doc.data());
+    res.json({ ok: true, users });
+  } catch (err) {
+    console.error("listUsers error:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 });

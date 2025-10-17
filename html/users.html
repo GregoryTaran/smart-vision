@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users — Smart Vision</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    body {
+      background: #f9fafb;
+      color: #222;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background: #f3f4f6;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: #f9f9ff;
+    }
+
+    .empty {
+      text-align: center;
+      color: #888;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Пользователи (тестовая база)</h1>
+    <table id="usersTable">
+      <thead>
+        <tr>
+          <th>Имя</th>
+          <th>Email</th>
+          <th>Создан</th>
+          <th>Обновлён</th>
+        </tr>
+      </thead>
+      <tbody id="usersBody">
+        <tr><td colspan="4" class="empty">Загрузка...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script type="module">
+    async function loadUsers() {
+      const body = document.getElementById("usersBody");
+      try {
+        const res = await fetch("https://us-central1-smart-vision-888.cloudfunctions.net/listUsers");
+        const data = await res.json();
+        if (!data.ok || !Array.isArray(data.users)) throw new Error("Invalid data");
+
+        if (data.users.length === 0) {
+          body.innerHTML = `<tr><td colspan="4" class="empty">Нет пользователей</td></tr>`;
+          return;
+        }
+
+        body.innerHTML = data.users.map(u => `
+          <tr>
+            <td>${u.name || "-"}</td>
+            <td>${u.email || "-"}</td>
+            <td>${u.createdAt ? new Date(u.createdAt).toLocaleString() : "-"}</td>
+            <td>${u.updatedAt ? new Date(u.updatedAt).toLocaleString() : "-"}</td>
+          </tr>
+        `).join("");
+      } catch (err) {
+        console.error(err);
+        body.innerHTML = `<tr><td colspan="4" class="empty">Ошибка загрузки</td></tr>`;
+      }
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>
