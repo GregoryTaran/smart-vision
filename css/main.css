@@ -16,7 +16,7 @@ body {
 /* === CLIENT INFO BAR === */
 .client-bar {
   max-width: 900px;
-  margin: 20px auto 10px;
+  margin: 2mm auto 10px; /* верхний отступ 2 мм */
   background: #fff;
   border-radius: 12px;
   padding: 10px 18px;
@@ -46,7 +46,7 @@ body {
   background: #fff;
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 h2 {
@@ -61,7 +61,7 @@ p {
   color: #444;
 }
 
-/* === BUTTON STYLE (for future use) === */
+/* === BUTTON STYLE === */
 .button {
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -69,6 +69,9 @@ p {
   background: #fff;
   cursor: pointer;
   transition: all 0.25s ease;
+  font-weight: 500;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .button:hover {
@@ -76,7 +79,22 @@ p {
   background: rgba(108, 99, 255, 0.08);
 }
 
-.button:active {
+.button:active,
+.button.active {
   background: rgba(108, 99, 255, 0.15);
   border-color: #6c63ff;
+}
+
+/* === TEXT UTILS === */
+.text-small {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
 }
