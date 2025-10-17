@@ -1,36 +1,61 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Vision WebRTC Audio Test</title>
+  <meta charset="UTF-8">
+  <title>Vision WebRTC Debug</title>
+  <style>
+    body { font-family: sans-serif; background: #f6f6f6; padding: 20px; }
+    textarea { width: 100%; height: 180px; margin: 10px 0; font-family: monospace; }
+    button { margin: 5px; padding: 10px 16px; font-size: 16px; }
+    #log { background: #fff; border: 1px solid #ccc; padding: 10px; height: 150px; overflow-y: auto; font-size: 14px; }
+  </style>
 </head>
 <body>
-  <h2>🎧 Vision WebRTC Test</h2>
+  <h2>🎧 Vision WebRTC Debug</h2>
   <button id="startCall">📞 Создать звонок</button>
   <button id="answerCall">✅ Ответить</button>
+  <button id="enableAudio">🔊 Включить звук</button>
   <textarea id="signal" placeholder="Вставь сюда сообщение от собеседника"></textarea>
+  <div id="log"></div>
   <audio id="remoteAudio" autoplay></audio>
 
   <script>
+    const log = msg => {
+      const el = document.getElementById('log');
+      el.innerHTML += msg + '<br>';
+      el.scrollTop = el.scrollHeight;
+      console.log(msg);
+    };
+
     const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
     const signalBox = document.getElementById('signal');
     const audio = document.getElementById('remoteAudio');
 
+    pc.oniceconnectionstatechange = () => log('ICE: ' + pc.iceConnectionState);
+    pc.onconnectionstatechange = () => log('PC: ' + pc.connectionState);
     pc.onicecandidate = e => {
-      if (e.candidate) return;
-      signalBox.value = JSON.stringify(pc.localDescription);
+      if (!e.candidate) {
+        signalBox.value = JSON.stringify(pc.localDescription);
+        log('📨 Скопируй и вставь этот JSON на другой стороне');
+      }
     };
-    pc.ontrack = e => (audio.srcObject = e.streams[0]);
+    pc.ontrack = e => {
+      log('🎧 Получен аудиопоток');
+      audio.srcObject = e.streams[0];
+      audio.play().catch(err => log('⚠️ Браузер блокирует звук: ' + err.message));
+    };
 
     async function getMic() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       stream.getTracks().forEach(t => pc.addTrack(t, stream));
+      log('🎤 Микрофон подключен');
     }
 
     document.getElementById('startCall').onclick = async () => {
       await getMic();
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
+      log('🚀 Offer создан');
     };
 
     document.getElementById('answerCall').onclick = async () => {
@@ -40,15 +65,22 @@
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
       signalBox.value = JSON.stringify(answer);
+      log('✅ Answer создан — отправь обратно');
     };
 
-    // вставка полученного ответа от собеседника
     signalBox.addEventListener('input', async () => {
       try {
         const data = JSON.parse(signalBox.value);
-        if (!pc.currentRemoteDescription) await pc.setRemoteDescription(data);
+        if (!pc.currentRemoteDescription && data.type) {
+          await pc.setRemoteDescription(data);
+          log('🔗 Установлено удалённое описание: ' + data.type);
+        }
       } catch {}
     });
+
+    document.getElementById('enableAudio').onclick = () => {
+      audio.play().then(() => log('🔊 Звук разрешён вручную')).catch(err => log('⚠️ Ошибка звука: ' + err.message));
+    };
   </script>
 </body>
 </html>
