@@ -1,5 +1,5 @@
 // ==========================
-// 🎤 Smart Vision — Voice to Whisper (pseudo-stream + overlap + live typing)
+// 🎤 Smart Vision — Voice to Whisper (pseudo-stream + live typing, no overlap)
 // ==========================
 
 const button = document.createElement("button");
@@ -14,7 +14,6 @@ container.appendChild(output);
 
 let mediaRecorder;
 let isRecording = false;
-let lastChunk = null;
 let partialText = "";
 
 // Автовыбор адреса API (локально / прод)
@@ -75,25 +74,15 @@ button.addEventListener("click", async () => {
       mediaRecorder = new MediaRecorder(stream);
       partialText = "";
       output.textContent = "🎙 Слушаю...";
-      lastChunk = null;
 
       // 🔁 Получаем аудио каждые 2 секунды
       mediaRecorder.start(2000);
 
       mediaRecorder.ondataavailable = async (e) => {
         const current = e.data;
-        if (current.size === 0) return;
-
-        let merged = current;
-
-        // 🧩 Добавляем перекрытие 0.5 сек из предыдущего чанка
-        if (lastChunk) {
-          const overlap = lastChunk.slice(-500000); // ≈ 0.5 сек
-          merged = new Blob([overlap, current], { type: "audio/webm" });
+        if (current.size > 0) {
+          sendToWhisper(current);
         }
-
-        sendToWhisper(merged);
-        lastChunk = current;
       };
 
       mediaRecorder.onstop = () => {
