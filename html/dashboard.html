@@ -4,54 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/css/login.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
   <title>Dashboard | Smart Vision</title>
-  <style>
-    /* Дополнительные стили для структуры */
-    .top-bar {
-      background: #fff;
-      padding: 8px 16px;
-      border-radius: 12px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-      font-size: 12px;
-      color: #555;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 700px;
-      width: 100%;
-      box-sizing: border-box;
-      margin: 20px auto 10px;
-    }
-
-    .logout-link {
-      color: #4285f4;
-      cursor: pointer;
-      text-decoration: none;
-      margin-left: 8px;
-    }
-
-    .logout-link:hover {
-      text-decoration: underline;
-    }
-
-    .main-block {
-      background: #fff;
-      max-width: 700px;
-      width: 100%;
-      padding: 24px;
-      margin: 0 auto;
-      border-radius: 16px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-      box-sizing: border-box;
-    }
-
-    @media (max-width: 600px) {
-      .top-bar, .main-block {
-        margin: 12px;
-        border-radius: 10px;
-      }
-    }
-  </style>
 </head>
 <body>
   <div class="top-bar">
@@ -65,7 +19,6 @@
   </div>
 
   <script type="module">
-    // Читаем данные из localStorage
     const user = JSON.parse(localStorage.getItem("user"));
     const info = document.getElementById("user-info");
 
@@ -75,7 +28,6 @@
       info.textContent = `Привет, ${user.name} (${user.email})`;
     }
 
-    // Обработчик выхода
     document.getElementById("logout").addEventListener("click", () => {
       localStorage.removeItem("user");
       window.location.href = "/html/login.html";
