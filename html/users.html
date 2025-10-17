@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Пользователи — Smart Vision</title>
 
-  <link rel="stylesheet" href="/css/main.css" />
-  <link rel="stylesheet" href="/css/dashboard.css" />
+  <!-- ✅ Работает и локально, и на сервере -->
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
 </head>
 <body>
   <div class="main-wrapper">
+    <!-- Левое меню -->
     <aside id="menu" class="sidebar"></aside>
 
+    <!-- Основной контент -->
     <main class="dashboard-content">
       <div class="card">
         <div class="card-header between">
@@ -40,8 +43,9 @@
     </main>
   </div>
 
-  <script src="/js/menu.js" type="module"></script>
-  <script src="/js/script.js" type="module"></script>
+  <!-- ✅ Подключаем общее меню и скрипты -->
+  <script src="../js/menu.js" type="module"></script>
+  <script src="../js/script.js" type="module"></script>
 
   <script type="module">
     const body = document.getElementById("usersBody");
@@ -63,7 +67,7 @@
         }
 
         body.innerHTML = data.users.map(u => `
-          <tr>
+          <tr class="fade-in">
             <td>${u.name || "-"}</td>
             <td>${u.email || "-"}</td>
             <td>${u.createdAt ? new Date(u.createdAt).toLocaleString() : "-"}</td>
