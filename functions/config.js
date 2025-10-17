@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const envPath = path.join(__dirname, ".local.env"); // новое имя
+const envPath = path.join(__dirname, ".local.env");
 
 dotenv.config({ path: envPath, override: true });
 
