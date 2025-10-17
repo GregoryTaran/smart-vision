@@ -1,32 +1,37 @@
 // js/auth.js
 // Smart Vision — Google + Email Link (passwordless) Authentication (Firebase)
+// Теперь Firebase-конфиг грузится из Secret Manager через Cloud Function getFirebaseConfig
 
-// === Firebase конфигурация ===
-const firebaseConfig = {
-  apiKey: "AIzaSyATQYyB5RbbKqIEN-STvBiVlxPjPRBAtF8",
-  authDomain: "smart-vision-888.firebaseapp.com",
-  projectId: "smart-vision-888",
-  storageBucket: "smart-vision-888.firebasestorage.app",
-  messagingSenderId: "485212580203",
-  appId: "1:485212580203:web:b9e97383d083be3e4b442e"
-};
+let firebaseConfig = null;
+let auth = null;
 
-// === Инициализация Firebase ===
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+// === Загрузка firebaseConfig из Cloud Function ===
+async function loadFirebaseConfig() {
+  try {
+    const res = await fetch("https://us-central1-smart-vision-888.cloudfunctions.net/getFirebaseConfig");
+    const data = await res.json();
+
+    if (!data.ok || !data.config) throw new Error("No config returned from server");
+
+    firebaseConfig = data.config;
+    firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+    console.log("✅ Firebase initialized from Secret Manager");
+
+    // После инициализации навешиваем обработчики
+    setupAuthListeners();
+  } catch (err) {
+    console.error("❌ Failed to load Firebase config:", err);
+    alert("Ошибка загрузки конфигурации Firebase. Попробуйте позже.");
+  }
+}
 
 // ==== UI Хелперы ====
-function show(selector) {
-  document.querySelectorAll(selector).forEach(el => el.classList.remove("hidden"));
-}
-function hide(selector) {
-  document.querySelectorAll(selector).forEach(el => el.classList.add("hidden"));
-}
-function setText(selector, text) {
-  const el = document.querySelector(selector);
-  if (el) el.textContent = text;
-}
+function show(selector) { document.querySelectorAll(selector).forEach(el => el.classList.remove("hidden")); }
+function hide(selector) { document.querySelectorAll(selector).forEach(el => el.classList.add("hidden")); }
+function setText(selector, text) { const el = document.querySelector(selector); if (el) el.textContent = text; }
 function toast(msg) { console.log(msg); }
 
 // ==== Google Sign-In ====
@@ -49,7 +54,6 @@ async function signInWithGoogle() {
 
 // ==== Email Link (passwordless) ====
 const actionCodeSettings = {
-  // URL, куда вернётся пользователь после клика по ссылке из письма
   url: "https://smartvision.life",
   handleCodeInApp: true
 };
@@ -73,20 +77,15 @@ async function sendEmailLink() {
   }
 }
 
-// При открытии страницы проверяем: это возврат по e-mail ссылке?
 async function completeEmailLinkSignInIfNeeded() {
   if (auth.isSignInWithEmailLink(window.location.href)) {
     let email = localStorage.getItem("sv_email_for_signin");
-    if (!email) {
-      // Если ссылку открыли на другом устройстве — попросим e-mail
-      email = window.prompt("Введите e-mail, на который пришла ссылка:");
-    }
+    if (!email) email = window.prompt("Введите e-mail, на который пришла ссылка:");
     try {
       const result = await auth.signInWithEmailLink(email, window.location.href);
       localStorage.removeItem("sv_email_for_signin");
       console.log("Signed in via email link:", result.user?.email);
-      // Очистим адресную строку от параметров
-      try { window.history.replaceState({}, document.title, "/"); } catch(_) {}
+      try { window.history.replaceState({}, document.title, "/"); } catch (_) {}
     } catch (e) {
       console.error("signInWithEmailLink error:", e);
       alert("Не удалось завершить вход по ссылке: " + (e?.message || e));
@@ -95,28 +94,32 @@ async function completeEmailLinkSignInIfNeeded() {
 }
 
 // ==== Слушатель состояния ====
-auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    const token = await user.getIdToken();
-    setText('[data-auth="email"]', user.email || "Unknown");
-    show('[data-auth="in"]');
-    hide('[data-auth="out"]');
-    document.documentElement.setAttribute("data-user", "signed-in");
-  } else {
-    setText('[data-auth="email"]', "");
-    show('[data-auth="out"]');
-    hide('[data-auth="in"]');
-    document.documentElement.setAttribute("data-user", "signed-out");
-  }
-});
+function setupAuthListeners() {
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      const token = await user.getIdToken();
+      setText('[data-auth="email"]', user.email || "Unknown");
+      show('[data-auth="in"]');
+      hide('[data-auth="out"]');
+      document.documentElement.setAttribute("data-user", "signed-in");
+    } else {
+      setText('[data-auth="email"]', "");
+      show('[data-auth="out"]');
+      hide('[data-auth="in"]');
+      document.documentElement.setAttribute("data-user", "signed-out");
+    }
+  });
 
-// ==== Подключение к кнопкам ====
-window.addEventListener("DOMContentLoaded", () => {
+  // Подключение кнопок
   const btnIn = document.querySelector('[data-action="login-google"]');
   const btnOut = document.querySelector('[data-action="logout"]');
   const emailBtn = document.getElementById("email-link-btn");
   if (btnIn) btnIn.addEventListener("click", signInWithGoogle);
   if (btnOut) btnOut.addEventListener("click", () => auth.signOut());
   if (emailBtn) emailBtn.addEventListener("click", sendEmailLink);
+
   completeEmailLinkSignInIfNeeded();
-});
+}
+
+// === Запуск ===
+window.addEventListener("DOMContentLoaded", loadFirebaseConfig);

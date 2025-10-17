@@ -15,6 +15,7 @@ export { speakToWhisper } from "./speakToWhisper.js";
    🔐 1. Секреты (берутся из Google Secret Manager)
    ============================================================ */
 const SHARED_SECRETS = [
+  defineSecret("FIREBASE_CONFIG_JSON"),
   defineSecret("OPENAI_API_KEY"),
   defineSecret("GOOGLE_API_KEY"),
   defineSecret("ONESIGNAL_APP_ID"),
@@ -100,4 +101,19 @@ export const checkSecrets = onRequest(defaultOptions, async (_req, res) => {
     }
   }
   res.json(result);
+});
+/* ============================================================
+   🔐 getFirebaseConfig — безопасная выдача firebaseConfig
+   ============================================================ */
+import { defineSecret } from "firebase-functions/params";
+const FIREBASE_CONFIG_JSON = defineSecret("FIREBASE_CONFIG_JSON");
+
+export const getFirebaseConfig = onRequest({ secrets: [FIREBASE_CONFIG_JSON] }, async (_req, res) => {
+  try {
+    const configString = FIREBASE_CONFIG_JSON.value();
+    const config = JSON.parse(configString);
+    res.json({ ok: true, config });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
 });
