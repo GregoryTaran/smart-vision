@@ -10,6 +10,7 @@ import { defineSecret } from "firebase-functions/params";
 import admin from "firebase-admin";
 import { setCORS } from "./cors.js";
 export { speakToWhisper } from "./speakToWhisper.js";
+export { getFirebaseConfig } from "./getFirebaseConfig.js";
 
 /* ============================================================
    🔐 1. Секреты (берутся из Google Secret Manager)
