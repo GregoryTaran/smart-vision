@@ -1,16 +1,20 @@
-console.log("✅ config.js loaded");
-import * as dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
+// functions/config.js
+console.log("✅ config.js loaded — Firebase Secrets mode active");
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Ми більше не використовуємо dotenv.
+// Ключі тепер приходять із Secret Manager (через defineSecret у index.js).
 
-// ⬇️ Путь к .env в корне проекта
-const envPath = path.join(__dirname, "../.local.env");
+export const ENV = (name, fallback = "") => {
+  // Firebase середовище автоматично додає всі Secrets як змінні
+  return process.env[name] ?? fallback;
+};
 
-// ✅ Локально берёт ключи из корневого .env
-// ✅ На сервере — автоматически использует Secret Manager
-dotenv.config({ path: envPath, override: true });
-
-export const ENV = (name, fallback = "") =>
-  process.env[name] ?? fallback;
+// Опціонально (для локальних тестів без секретів можна прописати):
+export const firebaseConfig = {
+  apiKey: ENV("FIREBASE_API_KEY", "FAKE_KEY_FOR_LOCAL"),
+  authDomain: "smart-vision-888.firebaseapp.com",
+  projectId: "smart-vision-888",
+  storageBucket: "smart-vision-888.appspot.com",
+  messagingSenderId: "FAKE_SENDER_ID",
+  appId: "FAKE_APP_ID",
+};
