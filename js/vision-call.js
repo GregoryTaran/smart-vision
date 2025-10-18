@@ -5,13 +5,14 @@ import {
   doc,
   setDoc,
   onSnapshot,
-  updateDoc,
-  getFirestore
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
 export async function setupVisionCalls({ db, usersList, audio, log }) {
   const servers = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
-  let pc, localStream;
+  let pc = null;
+  let localStream = null;
+  let activeCallRef = null;
   const currentUserEmail = window.currentUser?.email;
 
   if (!currentUserEmail) {
@@ -24,6 +25,7 @@ export async function setupVisionCalls({ db, usersList, audio, log }) {
     console.log(msg);
   };
 
+  // 🔹 Инициализация соединения и микрофона
   async function initPeer() {
     pc = new RTCPeerConnection(servers);
     localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -35,6 +37,7 @@ export async function setupVisionCalls({ db, usersList, audio, log }) {
     return pc;
   }
 
+  // 🔹 Загрузка списка пользователей
   async function loadUsers() {
     const querySnapshot = await getDocs(collection(db, "users"));
     usersList.innerHTML = "";
@@ -53,13 +56,16 @@ export async function setupVisionCalls({ db, usersList, audio, log }) {
     });
   }
 
+  // 🔹 Вызов пользователя
   async function callUser(emailTo) {
-    logMsg("🚀 Инициализация звонка...");
+    logMsg(`🚀 Инициализация звонка: ${emailTo}...`);
     const pc = await initPeer();
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
 
     const callRef = doc(collection(db, "calls"));
+    activeCallRef = callRef;
+
     await setDoc(callRef, {
       from: currentUserEmail,
       to: emailTo,
@@ -68,7 +74,7 @@ export async function setupVisionCalls({ db, usersList, audio, log }) {
       createdAt: new Date().toISOString()
     });
 
-    logMsg(`📨 Звонок отправлен: ${emailTo}`);
+    logMsg(`📨 Звонок отправлен пользователю: ${emailTo}`);
 
     onSnapshot(callRef, async snap => {
       const data = snap.data();
@@ -76,9 +82,13 @@ export async function setupVisionCalls({ db, usersList, audio, log }) {
         await pc.setRemoteDescription(data.answer);
         logMsg("✅ Соединение установлено");
       }
+      if (data?.status === "ended") {
+        endCall(false);
+      }
     });
   }
 
+  // 🔹 Прослушка входящих звонков
   async function listenIncoming() {
     const callsRef = collection(db, "calls");
     onSnapshot(callsRef, async snapshot => {
@@ -90,6 +100,7 @@ export async function setupVisionCalls({ db, usersList, audio, log }) {
           await pc.setRemoteDescription(data.offer);
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
+          activeCallRef = change.doc.ref;
           await updateDoc(change.doc.ref, {
             answer,
             status: "connected",
@@ -100,6 +111,41 @@ export async function setupVisionCalls({ db, usersList, audio, log }) {
       }
     });
   }
+
+  // 🔹 Завершить звонок
+  async function endCall(sendUpdate = true) {
+    if (pc) {
+      pc.close();
+      pc = null;
+    }
+    if (localStream) {
+      localStream.getTracks().forEach(t => t.stop());
+      localStream = null;
+    }
+    if (sendUpdate && activeCallRef) {
+      await updateDoc(activeCallRef, {
+        status: "ended",
+        endedAt: new Date().toISOString()
+      });
+    }
+    logMsg("📴 Звонок завершён");
+  }
+
+  // 🔹 Управление микрофоном
+  document.getElementById("muteBtn").onclick = () => {
+    if (!localStream) return;
+    const track = localStream.getAudioTracks()[0];
+    track.enabled = !track.enabled;
+    document.getElementById("muteBtn").textContent = track.enabled
+      ? "🔇 Выключить микрофон"
+      : "🎙 Включить микрофон";
+    logMsg(track.enabled ? "🎙 Микрофон включён" : "🔇 Микрофон выключен");
+  };
+
+  // 🔹 Кнопка завершения
+  document.getElementById("endBtn").onclick = () => {
+    endCall();
+  };
 
   await loadUsers();
   await listenIncoming();
