@@ -1,30 +1,48 @@
-// ✅ Единая проверка авторизации для всех страниц Smart Vision
+// ✅ Smart Vision — Единая проверка авторизации для всех страниц
 
 function checkAuth() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const info = document.getElementById("user-info");
-  const logout = document.getElementById("logout");
-
-  // 🔹 Проверка авторизации
-  if (!user || !user.email || !user.name) {
-    window.location.href = "/html/login.html";
-    return;
-  }
-
-  // 🔹 Отображение информации о пользователе
-  if (info) info.textContent = `${user.name} (${user.email})`;
-
-  // 🔹 Кнопка выхода
-  if (logout) {
-    logout.addEventListener("click", () => {
-      localStorage.removeItem("user");
+  try {
+    const raw = localStorage.getItem("user");
+    if (!raw) {
+      console.warn("⚠️ Нет сохранённого пользователя");
       window.location.href = "/html/login.html";
-    });
-  }
+      return;
+    }
 
-  // 🔹 Делаем пользователя доступным глобально
-  window.currentUser = user;
+    let user;
+    try {
+      user = JSON.parse(raw);
+    } catch {
+      console.warn("⚠️ Ошибка парсинга user JSON");
+      window.location.href = "/html/login.html";
+      return;
+    }
+
+    if (!user || !user.email) {
+      console.warn("⚠️ Неверный объект пользователя");
+      window.location.href = "/html/login.html";
+      return;
+    }
+
+    // 🔹 Отображение информации
+    const info = document.getElementById("user-info");
+    const logout = document.getElementById("logout");
+    if (info) info.textContent = `${user.name || "User"} (${user.email})`;
+
+    if (logout) {
+      logout.addEventListener("click", () => {
+        localStorage.removeItem("user");
+        window.location.href = "/html/login.html";
+      });
+    }
+
+    window.currentUser = user;
+    console.log("✅ Авторизация подтверждена:", user.email);
+
+  } catch (err) {
+    console.error("❌ Ошибка в checkAuth:", err);
+    window.location.href = "/html/login.html";
+  }
 }
 
-// Автоматический запуск при подключении
-checkAuth();
+window.addEventListener("DOMContentLoaded", checkAuth);
