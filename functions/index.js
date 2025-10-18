@@ -7,6 +7,9 @@ import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
 import { setCORS } from "./cors.js";
 import { firebaseConfig } from "./config.js";
+export { checkUser } from "./checkUser.js";
+export { saveUser } from "./saveUser.js";
+
 
 // Secrets (определяем глобально — это нормально)
 const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
