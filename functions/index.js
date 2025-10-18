@@ -10,7 +10,7 @@ import { firebaseConfig } from "./config.js";
 
 // Secrets (определяем глобально — это нормально)
 const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
-const FIREBASE_CONFIG_JSON = defineSecret("FIREBASE_CONFIG_JSON");
+const FIREBASE_CONFIG_JSON = defineSecret("FIREBASE_CONFIG_JSON", { version: "latest" });
 const GOOGLE_API_KEY = defineSecret("GOOGLE_API_KEY");
 const GOOGLE_KEY_JSON = defineSecret("GOOGLE_KEY_JSON");
 
