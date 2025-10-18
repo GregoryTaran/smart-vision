@@ -1,26 +1,27 @@
-// js/auth.js
-// Smart Vision — Google + Email Link (passwordless) Authentication (Firebase)
-// Теперь Firebase-конфиг грузится из Secret Manager через Cloud Function getFirebaseConfig
+// Smart Vision — Authentication Module
+// Firebase config загружается из Secret Manager через Cloud Function getFirebaseConfig
 
 let firebaseConfig = null;
 let auth = null;
 
-// === Загрузка firebaseConfig из Cloud Function ===
+// === Загрузка Firebase Config ===
 async function loadFirebaseConfig() {
   try {
+    console.log("🔄 Requesting Firebase config...");
     const res = await fetch("https://us-central1-smart-vision-888.cloudfunctions.net/getFirebaseConfig");
     const data = await res.json();
-
     if (!data.ok || !data.config) throw new Error("No config returned from server");
 
     firebaseConfig = data.config;
-    firebase.initializeApp(firebaseConfig);
+
+    // Инициализация Firebase (проверяем, чтобы не повторять)
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     auth = firebase.auth();
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
     console.log("✅ Firebase initialized from Secret Manager");
 
-    // После инициализации навешиваем обработчики
+    // После инициализации — навешиваем слушатели
     setupAuthListeners();
   } catch (err) {
     console.error("❌ Failed to load Firebase config:", err);
@@ -28,11 +29,11 @@ async function loadFirebaseConfig() {
   }
 }
 
-// ==== UI Хелперы ====
-function show(selector) { document.querySelectorAll(selector).forEach(el => el.classList.remove("hidden")); }
-function hide(selector) { document.querySelectorAll(selector).forEach(el => el.classList.add("hidden")); }
-function setText(selector, text) { const el = document.querySelector(selector); if (el) el.textContent = text; }
-function toast(msg) { console.log(msg); }
+// ==== UI Helpers ====
+function show(sel) { document.querySelectorAll(sel).forEach(el => el.classList.remove("hidden")); }
+function hide(sel) { document.querySelectorAll(sel).forEach(el => el.classList.add("hidden")); }
+function setText(sel, txt) { const el = document.querySelector(sel); if (el) el.textContent = txt; }
+function toast(msg) { console.log("ℹ️", msg); }
 
 // ==== Google Sign-In ====
 async function signInWithGoogle() {
@@ -93,7 +94,7 @@ async function completeEmailLinkSignInIfNeeded() {
   }
 }
 
-// ==== Слушатель состояния ====
+// ==== Слушатель состояния пользователя ====
 function setupAuthListeners() {
   auth.onAuthStateChanged(async (user) => {
     if (user) {
@@ -102,11 +103,13 @@ function setupAuthListeners() {
       show('[data-auth="in"]');
       hide('[data-auth="out"]');
       document.documentElement.setAttribute("data-user", "signed-in");
+      console.log("🔐 User signed in:", user.email, "token:", token.slice(0,10) + "…");
     } else {
       setText('[data-auth="email"]', "");
       show('[data-auth="out"]');
       hide('[data-auth="in"]');
       document.documentElement.setAttribute("data-user", "signed-out");
+      console.log("🚪 User signed out");
     }
   });
 
@@ -115,11 +118,40 @@ function setupAuthListeners() {
   const btnOut = document.querySelector('[data-action="logout"]');
   const emailBtn = document.getElementById("email-link-btn");
   if (btnIn) btnIn.addEventListener("click", signInWithGoogle);
-  if (btnOut) btnOut.addEventListener("click", () => auth.signOut());
+  if (btnOut) btnOut.addEventListener("click", logout);
   if (emailBtn) emailBtn.addEventListener("click", sendEmailLink);
 
   completeEmailLinkSignInIfNeeded();
 }
 
-// === Запуск ===
+// ==== Выход пользователя ====
+async function logout() {
+  try {
+    if (!auth) {
+      console.warn("Firebase Auth not initialized yet");
+      return;
+    }
+    localStorage.removeItem("sv_email_for_signin");
+    sessionStorage.clear();
+
+    await auth.signOut();
+
+    show('[data-auth="out"]');
+    hide('[data-auth="in"]');
+    document.documentElement.setAttribute("data-user", "signed-out");
+
+    // Перенаправление на страницу входа
+    if (window.location.pathname.includes("dashboard")) {
+      window.location.href = "/html/login.html";
+    }
+
+    toast("Вы вышли из Smart Vision");
+    console.log("✅ User signed out successfully");
+  } catch (err) {
+    console.error("❌ Logout error:", err);
+    alert("Не удалось выйти: " + (err.message || err));
+  }
+}
+
+// === Автозапуск ===
 window.addEventListener("DOMContentLoaded", loadFirebaseConfig);
