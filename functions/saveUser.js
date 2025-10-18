@@ -9,24 +9,32 @@ export const saveUser = onRequest(async (req, res) => {
   if (setCORS(res, req)) return;
 
   try {
-    if (req.method !== "POST")
-      return res.status(405).json({ ok: false, error: "Use POST" });
+    let email, name;
 
-    const { email, name } = req.body || {};
+    // ✅ Разрешаем POST и GET
+    if (req.method === "POST") {
+      ({ email, name } = req.body || {});
+    } else if (req.method === "GET") {
+      email = req.query.email;
+      name = req.query.name || "Без имени";
+    } else {
+      return res.status(405).json({ ok: false, error: "Method not allowed" });
+    }
+
     if (!email) return res.status(400).json({ ok: false, error: "Missing email" });
 
     const ref = db.collection("users").doc(email);
     await ref.set(
       {
         email,
-        name: name || "Без имени",
+        name,
         updatedAt: new Date().toISOString(),
       },
       { merge: true }
     );
 
     console.log(`✅ User saved: ${email}`);
-    res.status(200).json({ ok: true, email });
+    res.json({ ok: true, email });
   } catch (err) {
     console.error("saveUser error:", err);
     res.status(500).json({ ok: false, error: err.message });
