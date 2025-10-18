@@ -1,72 +1,51 @@
-/**
- * functions/speakToWhisper.js
- * Реализация обработчика для транскрибации.
- * Экспортирует функцию `handler(req, res, ctx)` — ctx содержит объекты-secrets.
- *
- * Важно: здесь **не** создаём onRequest — это делает index.js лениво.
- */
-
 import fs from "fs";
 import os from "os";
 import path from "path";
+import { onRequest } from "firebase-functions/v2/https";
+import { defineSecret } from "firebase-functions/params";
+import { setCORS } from "./cors.js";
 
-export async function handler(req, res, ctx = {}) {
-  // ctx.OPENAI_API_KEY — defineSecret объект передаётся из index.js, его значение берём через .value()
+// Подключаем секрет (OpenAI API Key)
+const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
+
+// === Основная логика ===
+async function handler(req, res) {
   try {
-    if (req.method === "OPTIONS") {
-      res.status(204).send("");
-      return;
-    }
+    if (setCORS(res, req)) return;
+    if (req.method === "OPTIONS") return res.status(204).send("");
     if (req.method !== "POST") {
       return res.status(405).json({ ok: false, error: "Method not allowed" });
     }
 
-    // body может быть в req.body или req.json()
     let body = req.body;
     if (!body) {
-      try { body = await req.json(); } catch(_) { body = {}; }
+      try { body = await req.json(); } catch { body = {}; }
     }
 
     const { audio, ext = "webm", mime } = body || {};
     if (!audio) return res.status(400).json({ ok: false, error: "No audio provided" });
 
-    // создаём временный файл
+    // Создаём временный файл
     const tmpFile = path.join(os.tmpdir(), `sv_chunk_${Date.now()}.${ext}`);
     fs.writeFileSync(tmpFile, Buffer.from(audio, "base64"));
 
-    // ДИНАМИЧЕСКИ импортируем OpenAI только здесь
+    // Импортируем OpenAI динамически
     const { default: OpenAI } = await import("openai");
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-    const apiKey = (ctx.OPENAI_API_KEY && typeof ctx.OPENAI_API_KEY.value === "function")
-      ? ctx.OPENAI_API_KEY.value()
-      : process.env.OPENAI_API_KEY;
-
-    if (!apiKey) {
-      // удаляем временный файл
-      try { fs.unlinkSync(tmpFile); } catch (_) {}
-      return res.status(500).json({ ok: false, error: "OPENAI_API_KEY not set" });
-    }
-
-    const openai = new OpenAI({ apiKey });
-
-    // Используем audio.transcriptions.create (совместимо с новой openai SDK)
     const response = await openai.audio.transcriptions.create({
       file: fs.createReadStream(tmpFile),
       model: "whisper-1",
-      // остальные опции при необходимости
     });
 
-    // чистим файл
-    try { fs.unlinkSync(tmpFile); } catch (_) {}
-
-    // response может быть объектом — берем текст
-    const text = response?.text ?? (typeof response === "string" ? response : JSON.stringify(response));
-
+    fs.unlinkSync(tmpFile);
+    const text = response?.text ?? "No text recognized";
     return res.status(200).json({ ok: true, text });
   } catch (err) {
-    console.error("speakToWhisper handler error:", err);
-    return res.status(500).json({ ok: false, error: err.message ?? String(err) });
+    console.error("❌ speakToWhisper error:", err);
+    return res.status(500).json({ ok: false, error: err.message || String(err) });
   }
 }
 
-export default handler;
+// === Обёртка для Firebase ===
+export const speakToWhisper = onRequest({ secrets: [OPENAI_API_KEY] }, handler);
